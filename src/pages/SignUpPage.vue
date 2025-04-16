@@ -1,24 +1,50 @@
 <script setup>
 import router from '@/router'
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
-import { ref, onMounted } from 'vue'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { getFirestore, doc, setDoc } from 'firebase/firestore'
+import { ref } from 'vue'
 import useAuth from '../../composable/useAuth'
 
 const { isAuthenticated } = useAuth()
 const email = ref('')
 const password = ref('')
+const firstName = ref('')
+const lastName = ref('')
+const phone = ref('')
+const registrationError = ref('')
+const registrationSuccess = ref(false)
+const db = getFirestore()
 
-function register() {
+async function register() {
+  registrationError.value = ''
+  registrationSuccess.value = false
+
   const auth = getAuth()
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then((userCredential) => {
-      const user = userCredential.user
-      alert('Sign up success')
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
+    const user = userCredential.user
+
+    await updateProfile(user, {
+      displayName: `${firstName.value} ${lastName.value}`,
+    })
+
+    const userDocRef = doc(db, 'users', user.uid)
+    const userData = {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      phone: phone.value,
+    }
+
+    await setDoc(userDocRef, userData)
+
+    registrationSuccess.value = true
+    setTimeout(() => {
       router.push('/')
-    })
-    .catch((error) => {
-      alert(error.message)
-    })
+    }, 1500)
+  } catch (error) {
+    registrationError.value = error.message
+  }
 }
 </script>
 
@@ -26,8 +52,15 @@ function register() {
   <div>
     <form v-if="!isAuthenticated" @submit.prevent="register">
       <h2>Register</h2>
+      <div v-if="registrationSuccess" class="success-message">Sign up success! Redirecting...</div>
+      <div v-if="registrationError" class="error-message">{{ registrationError }}</div>
+
+      <input type="text" placeholder="First Name" v-model="firstName" />
+      <input type="text" placeholder="Last Name" v-model="lastName" />
       <input type="email" placeholder="Email..." v-model="email" />
       <input type="password" placeholder="Password..." suggested v-model="password" />
+      <input type="tel" placeholder="Phone Number (optional)" v-model="phone" />
+
       <button type="submit">Sign Up</button>
     </form>
     <p v-else>You are already logged in.</p>
