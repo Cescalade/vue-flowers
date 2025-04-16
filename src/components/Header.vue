@@ -6,7 +6,7 @@
       </div>
     </router-link>
     <ul class="flex items-center gap-5">
-      <li>
+      <li v-if="isAuthenticated">
         <router-link to="/profile"
           ><a class="cursor-pointer text-center transition hover:text-stone-500">
             Profile

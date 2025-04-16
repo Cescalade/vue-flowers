@@ -41,7 +41,7 @@ async function register() {
     registrationSuccess.value = true
     setTimeout(() => {
       router.push('/')
-    }, 1500)
+    }, 150)
   } catch (error) {
     registrationError.value = error.message
   }
@@ -55,14 +55,20 @@ async function register() {
       <div v-if="registrationSuccess" class="success-message">Sign up success! Redirecting...</div>
       <div v-if="registrationError" class="error-message">{{ registrationError }}</div>
 
-      <input type="text" placeholder="First Name" v-model="firstName" />
-      <input type="text" placeholder="Last Name" v-model="lastName" />
-      <input type="email" placeholder="Email..." v-model="email" />
-      <input type="password" placeholder="Password..." suggested v-model="password" />
-      <input type="tel" placeholder="Phone Number (optional)" v-model="phone" />
+      <input type="text" placeholder="First Name" v-model="firstName" autocomplete="given-name" />
+      <input type="text" placeholder="Last Name" v-model="lastName" autocomplete="family-name" />
+      <input type="email" placeholder="Email..." autocomplete="email" v-model="email" />
+      <input
+        type="password"
+        placeholder="Password..."
+        autocomplete="new-password"
+        v-model="password"
+      />
+      <input type="tel" placeholder="Phone Number (optional)" v-model="phone" autocomplete="tel" />
 
       <button type="submit">Sign Up</button>
     </form>
+    <p v-else-if="registrationSuccess">success</p>
     <p v-else>You are already logged in.</p>
   </div>
 </template>

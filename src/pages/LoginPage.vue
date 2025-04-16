@@ -29,8 +29,8 @@ function login() {
   <div>
     <form v-if="!isAuthenticated" @submit.prevent="login">
       <h2>Login</h2>
-      <input type="email" placeholder="Email..." v-model="email" />
-      <input type="password" placeholder="Password..." v-model="password" />
+      <input type="email" placeholder="Email..." autocomplete="email" v-model="email" />
+      <input type="password" placeholder="Password..." autocomplete="password" v-model="password" />
       <button type="submit">Log In</button>
       <p>Don't have an account? <router-link to="/register">Register</router-link></p>
     </form>
