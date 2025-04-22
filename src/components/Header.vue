@@ -14,7 +14,12 @@
         >
       </li>
       <li class="">
-        <button class="cursor-pointer text-center transition hover:text-stone-500">Cart:</button>
+        <button
+          @click="drawer.open()"
+          class="cursor-pointer text-center transition hover:text-stone-500"
+        >
+          Cart:
+        </button>
       </li>
       <li v-if="!isAuthenticated">
         <router-link to="/register">
@@ -39,7 +44,9 @@
 import useAuth from '../../composable/useAuth'
 import { getAuth, signOut } from 'firebase/auth'
 import { useRouter } from 'vue-router'
+import { useDrawerStore } from '@/stores/drawer'
 
+const drawer = useDrawerStore()
 const { isAuthenticated } = useAuth()
 const router = useRouter()
 
