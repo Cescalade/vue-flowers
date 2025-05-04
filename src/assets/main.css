@@ -1,5 +1,52 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Nominee';
+  src:
+    url('/fonts/Nominee-Bold.otf') format('opentype'),
+    url('/fonts/Nominee-Bold.ttf') format('truetype');
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nominee';
+  src:
+    url('/fonts/Nominee-Medium1.otf') format('opentype'),
+    url('/fonts/Nominee-Medium1.ttf') format('truetype');
+  font-weight: 500; /* Medium */
+  font-style: normal;
+  font-display: swap;
+}
 body {
-  background-color: gainsboro;
+  font-family: 'Nominee', sans-serif;
+  font-weight: 500;
+  color: #292f3b;
+}
+.text-gradient {
+  background-image: linear-gradient(60deg, #ff934c, #fc686f);
+  color: transparent;
+  background-clip: text;
+}
+.button-gradient {
+  background-image: linear-gradient(66deg, #ff934c, #ff3c45);
+}
+
+.text-nominee-bold {
+  font-family: 'Nominee', sans-serif;
+  font-weight: 700;
+}
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Плавное появление/исчезновение */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }

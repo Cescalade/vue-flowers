@@ -5,7 +5,7 @@ import Drawer from './components/Drawer.vue'
 </script>
 
 <template>
-  <defaultLayout>
+  <defaultLayout class="overflow-hidden">
     <Header class="z-5" />
     <Drawer />
     <router-view></router-view>

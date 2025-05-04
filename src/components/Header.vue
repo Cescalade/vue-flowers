@@ -1,11 +1,11 @@
 <template>
-  <header class="flex justify-between px-8 pt-1 border-b-1 border-b-gray-200 rounded-xl shadow-md">
+  <header class="flex justify-between px-8 pt-1 bg-transparent rounded-xl relative z-10 text-lg">
     <router-link to="/">
       <div class="flex items-center">
-        <img class="w-10" src="@/assets/logo.svg" alt="Logo" />
+        <img class="w-15" src="@/assets/images/florist-svgrepo-com.svg" alt="Logo" />
       </div>
     </router-link>
-    <ul class="flex items-center gap-5">
+    <ul class="flex items-center gap-20">
       <li v-if="isAuthenticated">
         <router-link to="/profile"
           ><a class="cursor-pointer text-center transition hover:text-stone-500">
@@ -28,7 +28,7 @@
       </li>
       <li v-if="!isAuthenticated">
         <router-link to="/login">
-          <a>Login</a>
+          <a>Войти</a>
         </router-link>
       </li>
       <li v-if="isAuthenticated">
