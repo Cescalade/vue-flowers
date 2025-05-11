@@ -46,15 +46,19 @@ onMounted(getProducts)
 </script>
 
 <template>
-  <img src="/main-image.png" alt="цветы в вазе" class="max-w-160 absolute -top-60 right-1/9" />
+  <img
+    src="/main-image.png"
+    alt="цветы в вазе"
+    class="w-full max-w-[20rem] md:max-w-[25rem] lg:max-w-[30rem] xl:max-w-[37rem] h-auto absolute -top-[10%] md:-top-[10%] right-[5%] md:right-[5%] transform transition-all duration-300"
+  />
   <main class="overflow-hidden relative">
-    <div class="p-12 h-160 relative flex flex-col pt-30 pl-20 gap-4">
+    <div class="p-12 h-160 relative flex flex-col pt-30 pl-20 gap-8">
       <h1 class="text-4xl font-bold">
         Выбери свой <br />
         <span class="text-gradient">идеальный</span> букет
       </h1>
       <button
-        class="text-white cursor-pointer ml-8 w-50 p-2 bg-linear-to-tr from-orange-400 to-red-600 hover:from-orange-400 hover:to-red-500 rounded-3xl transition shadow-[0_0px_20px_rgba(255,60,70,1)] hover:shadow-[0_0px_35px_rgba(255,60,70,1)]"
+        class="text-white cursor-pointer w-50 p-2 bg-linear-to-tr from-orange-400 to-red-600 hover:from-orange-400 hover:to-red-500 rounded-3xl transition shadow-[0_0px_20px_rgba(255,60,70,1)] hover:shadow-[0_0px_35px_rgba(255,60,70,1)]"
         @click="scrollToFlowers"
       >
         Каталог
