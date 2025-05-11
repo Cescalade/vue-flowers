@@ -1,54 +1,38 @@
 <script setup>
 import { ref } from 'vue'
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { getFirestore, doc, setDoc } from 'firebase/firestore'
+import { useAuthStore } from '@/stores/authStore'
 import { useRegisterDrawerStore } from '@/stores/registerDrawer'
-import useAuth from '../../composable/useAuth'
-import router from '@/router'
 import { useLoginDrawerStore } from '@/stores/loginDrawer'
+import { useRouter } from 'vue-router'
 
-const { isAuthenticated } = useAuth()
+const authStore = useAuthStore()
 const registerDrawer = useRegisterDrawerStore()
 const loginDrawer = useLoginDrawerStore()
+const router = useRouter()
 
-const email = ref('')
-const password = ref('')
-const firstName = ref('')
-const lastName = ref('')
-const phone = ref('')
-const registrationError = ref('')
+const form = ref({
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  phone: '',
+})
+
 const registrationSuccess = ref(false)
-const db = getFirestore()
+const registrationError = ref('')
 
-const register = async (event) => {
+const handleRegister = async (event) => {
   event.preventDefault()
-  registrationError.value = ''
-  registrationSuccess.value = false
-
   try {
-    const auth = getAuth()
-    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
-    const user = userCredential.user
-
-    await updateProfile(user, {
-      displayName: `${firstName.value} ${lastName.value}`,
-    })
-
-    const userDocRef = doc(db, 'users', user.uid)
-    await setDoc(userDocRef, {
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value,
-      phone: phone.value,
-    })
-
+    await authStore.register(form.value)
     registrationSuccess.value = true
     setTimeout(() => {
       registerDrawer.close()
       router.push('/')
     }, 1500)
   } catch (error) {
-    registrationError.value = `Ошибка регистрации: ${error.message} (${error.code})`
+    registrationError.value = authStore.error
+    form.value.password = ''
   }
 }
 </script>
@@ -91,8 +75,8 @@ const register = async (event) => {
       </div>
 
       <div class="mt-8 flex flex-col grow justify-between">
-        <form @submit.prevent="register" class="flex flex-col gap-2">
-          <div v-if="registrationSuccess" class="text-green-600 text-center mb-4">
+        <form @submit.prevent="handleRegister" class="flex flex-col gap-2">
+          <div v-if="registrationSuccess" class="text-black text-center mb-4">
             Успешная регистрация! Перенаправление...
           </div>
           <div v-if="registrationError" class="text-red-500 text-sm text-center mb-4">
@@ -103,7 +87,7 @@ const register = async (event) => {
           <input
             type="text"
             required
-            v-model="firstName"
+            v-model="form.firstName"
             autocomplete="given-name"
             class="bg-white shadow-sm rounded-lg h-9 px-3"
           />
@@ -112,7 +96,7 @@ const register = async (event) => {
           <input
             type="text"
             required
-            v-model="lastName"
+            v-model="form.lastName"
             autocomplete="family-name"
             class="bg-white shadow-sm rounded-lg h-9 px-3"
           />
@@ -121,7 +105,7 @@ const register = async (event) => {
           <input
             type="email"
             required
-            v-model="email"
+            v-model="form.email"
             autocomplete="email"
             class="bg-white shadow-sm rounded-lg h-9 px-3"
           />
@@ -130,7 +114,7 @@ const register = async (event) => {
           <input
             type="password"
             required
-            v-model="password"
+            v-model="form.password"
             autocomplete="new-password"
             class="bg-white shadow-sm rounded-lg h-9 px-3"
           />
@@ -138,10 +122,13 @@ const register = async (event) => {
           <label class="ml-2">Телефон (необязательно)</label>
           <input
             type="tel"
-            v-model="phone"
+            v-model="form.phone"
             autocomplete="tel"
             class="bg-white shadow-sm rounded-lg h-9 px-3"
           />
+          <div v-if="authStore.error" class="text-red-500 text-sm text-center mb-4">
+            {{ authStore.error }}
+          </div>
 
           <button
             type="submit"

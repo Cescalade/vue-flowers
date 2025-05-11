@@ -1,29 +1,31 @@
 <script setup>
 import { ref } from 'vue'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { useAuthStore } from '@/stores/authStore'
 import { useLoginDrawerStore } from '@/stores/loginDrawer'
 import { useRegisterDrawerStore } from '@/stores/registerDrawer'
-import useAuth from '../../composable/useAuth'
-import router from '@/router'
-const { isAuthenticated } = useAuth()
+import { useRouter } from 'vue-router'
+
+const authStore = useAuthStore()
 const loginDrawer = useLoginDrawerStore()
 const registerDrawer = useRegisterDrawerStore()
+const router = useRouter()
 
 const email = ref('')
 const password = ref('')
+const loginSuccess = ref(false)
 
-const login = async (event) => {
+const handleLogin = async (event) => {
   event.preventDefault()
-
   try {
-    const auth = getAuth()
-    await signInWithEmailAndPassword(auth, email.value, password.value)
-    alert('Успешный вход!')
-    loginDrawer.close()
-    router.push('/')
-  } catch (error) {
-    alert(`Ошибка входа: ${error.message} (${error.code})`)
+    await authStore.login(email.value, password.value)
+    loginSuccess.value = true
+    setTimeout(() => {
+      loginDrawer.close()
+      router.push('/')
+    }, 1500)
+  } catch {
     password.value = ''
+    loginSuccess.value = false
   }
 }
 </script>
@@ -65,7 +67,7 @@ const login = async (event) => {
       </div>
 
       <div class="mt-12 flex flex-col grow justify-between">
-        <form @submit.prevent="login" class="flex flex-col gap-2">
+        <form @submit.prevent="handleLogin" class="flex flex-col gap-2">
           <label for="email" class="ml-2">Почта или номер телефона</label>
           <input
             type="plain"
@@ -90,6 +92,9 @@ const login = async (event) => {
           >
             Войти ➜
           </button>
+          <div v-if="loginSuccess" class="text-black text-center mb-4">
+            Успешный вход! Перенаправление...
+          </div>
         </form>
 
         <div class="flex flex-col items-center text-gray-800 pb-4">
@@ -117,7 +122,6 @@ const login = async (event) => {
   opacity: 0;
 }
 
-/* Анимация контента */
 .drawer-content-enter-active,
 .drawer-content-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

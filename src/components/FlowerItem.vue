@@ -1,10 +1,23 @@
 <script setup>
-defineProps({
-  id: 0,
-  imgUrl: '',
-  title: '',
-  price: 0,
+import { useCartStore } from '@/stores/cartStore'
+
+const cartStore = useCartStore()
+
+const props = defineProps({
+  id: Number,
+  imgUrl: String,
+  title: String,
+  price: Number,
 })
+
+const addToCart = () => {
+  cartStore.addItem({
+    id: props.id,
+    title: props.title,
+    price: props.price,
+    imgUrl: props.imgUrl,
+  })
+}
 </script>
 
 <template>
@@ -21,7 +34,7 @@ defineProps({
 
     <button
       class="cursor-pointer w-full text-white py-3 bg-[#f26545] translate-y-20 group-hover:translate-y-0 group-hover:h- transition-all duration-300 hover:bg-red-400 flex items-center justify-center"
-      @click.prevent=""
+      @click.prevent="addToCart"
     >
       В Корзину
     </button>

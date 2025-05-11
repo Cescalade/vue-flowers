@@ -5,10 +5,10 @@
         <img class="w-15" src="@/assets/images/florist-svgrepo-com.svg" alt="Logo" />
       </div>
     </router-link>
-    <ul class="flex items-center gap-20 mr-[3%] text-white font-bold">
+    <ul class="flex items-center gap-20 mr-[3%] text-black font-bold">
       <li v-if="isAuthenticated" class="group">
         <router-link to="/profile"
-          ><a class="cursor-pointer text-center transition-all">
+          ><a class="cursor-pointer relative inline-block text-center transition-all">
             профиль
             <span
               class="absolute bottom-0 left-1/2 w-0 h-px bg-current transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"
@@ -21,6 +21,9 @@
           class="cursor-pointer relative text-center transition-all inline-block"
         >
           корзина:
+          <span v-if="cartStore.totalPrice > 0" class="ml-1">
+            {{ cartStore.totalPrice }} руб.
+          </span>
           <span
             class="absolute bottom-0 left-1/2 w-0 h-1/19 bg-current transform -translate-x-1/2 transition-all duration-300 group-hover:w-full"
           ></span>
@@ -70,7 +73,9 @@ import { useRouter } from 'vue-router'
 import { useDrawerStore } from '@/stores/drawer'
 import { useLoginDrawerStore } from '@/stores/loginDrawer'
 import { useRegisterDrawerStore } from '@/stores/registerDrawer'
+import { useCartStore } from '@/stores/cartStore'
 
+const cartStore = useCartStore()
 const drawer = useDrawerStore()
 const loginDrawer = useLoginDrawerStore()
 const registerDrawer = useRegisterDrawerStore()

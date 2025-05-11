@@ -4,6 +4,16 @@ import defaultLayout from '../layouts/default.vue'
 import Drawer from './components/Drawer.vue'
 import LoginDrawer from './components/LoginDrawer.vue'
 import RegisterDrawer from './components/RegisterDrawer.vue'
+import { useAuthStore } from '@/stores/authStore'
+import { useCartStore } from '@/stores/cartStore'
+import { onMounted } from 'vue'
+
+const authStore = useAuthStore()
+const cartStore = useCartStore()
+
+onMounted(async () => {
+  authStore.init()
+})
 </script>
 
 <template>

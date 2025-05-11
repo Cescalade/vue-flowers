@@ -1,8 +1,16 @@
 <script setup>
 import CartItemList from './CartItemList.vue'
+import { useCartStore } from '@/stores/cartStore'
 import { useDrawerStore } from '@/stores/drawer'
+import router from '@/router'
 
+const cartStore = useCartStore()
 const drawer = useDrawerStore()
+
+const handlePayment = () => {
+  router.push({ name: 'checkout' })
+  drawer.close()
+}
 </script>
 
 <template>
@@ -27,18 +35,20 @@ const drawer = useDrawerStore()
         >
           ➜
         </button>
-        <h2 class="text-2xl font-bold">Cart</h2>
+        <h2 class="text-2xl font-bold">Корзина</h2>
       </div>
       <CartItemList />
     </div>
 
     <div class="mt-12 flex flex-col gap-2">
       <div class="text-xl flex justify-between">
-        <p>Total:</p>
-        <b>99999руб</b>
+        <p>Итого:</p>
+        <b>{{ cartStore.totalPrice.toFixed(2) }} руб</b>
       </div>
       <button
-        class="bg-gray-300 rounded-xl h-12 font-bold text-2xl cursor-pointer hover:shadow-md transition"
+        @click="handlePayment"
+        :disabled="cartStore.items.length === 0"
+        class="bg-gray-300 rounded-xl h-12 font-bold text-2xl cursor-pointer hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         Pay
       </button>
