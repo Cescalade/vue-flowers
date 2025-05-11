@@ -20,10 +20,12 @@ export const useAuthStore = defineStore('auth', () => {
   const isInitialized = ref(false)
 
   const init = () => {
-    isLoading.value = true
-    onAuthStateChanged(auth, async (firebaseUser) => {
-      user.value = firebaseUser
-      isLoading.value = false
+    return new Promise((resolve) => {
+      onAuthStateChanged(auth, (firebaseUser) => {
+        user.value = firebaseUser
+        isInitialized.value = true
+        resolve()
+      })
     })
   }
 
@@ -91,5 +93,5 @@ export const useAuthStore = defineStore('auth', () => {
     console.error('Firebase Error:', error)
   }
 
-  return { user, isLoading, error, init, login, register, logout }
+  return { user, isLoading, error, isInitialized, init, login, register, logout }
 })

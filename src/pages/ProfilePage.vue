@@ -64,14 +64,25 @@ const checkAuth = async () => {
   if (!authStore.isInitialized) {
     await authStore.init()
   }
-
+  if (!authStore.user) {
+    router.push('/')
+    return false
+  }
   return true
 }
 
+const authLoading = ref(true)
+
 onMounted(async () => {
-  const isAuthenticated = await checkAuth()
-  if (isAuthenticated) {
-    await loadProfileData()
+  try {
+    const isAuthenticated = await checkAuth()
+    if (isAuthenticated && authStore.user) {
+      await loadProfileData()
+    }
+  } catch (err) {
+    error.value = 'Ошибка авторизации'
+  } finally {
+    authLoading.value = false
   }
 })
 </script>
