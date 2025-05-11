@@ -86,6 +86,7 @@ export const useCartStore = defineStore('cart', () => {
     items,
     totalPrice,
     isCartLoading,
+    initCart,
     addItem,
     removeItem,
     updateQuantity,

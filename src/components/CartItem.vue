@@ -3,7 +3,7 @@ import { useCartStore } from '@/stores/cartStore'
 
 const cartStore = useCartStore()
 const props = defineProps({
-  id: Number,
+  id: String,
   imgUrl: String,
   title: String,
   price: Number,

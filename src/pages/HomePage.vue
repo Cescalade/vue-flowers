@@ -49,7 +49,7 @@ onMounted(getProducts)
   <img
     src="/main-image.png"
     alt="цветы в вазе"
-    class="w-full max-w-[20rem] md:max-w-[25rem] lg:max-w-[30rem] xl:max-w-[37rem] h-auto absolute -top-[10%] md:-top-[10%] right-[5%] md:right-[5%] transform transition-all duration-300"
+    class="w-full max-w-[20rem] md:max-w-[25rem] lg:max-w-[30rem] xl:max-w-[37rem] h-auto absolute -top-[13.5rem] md:-top-[13.5rem] right-[5%] md:right-[5%] transform transition-all duration-300"
   />
   <main class="overflow-hidden relative">
     <div class="p-12 h-160 relative flex flex-col pt-30 pl-20 gap-8">
