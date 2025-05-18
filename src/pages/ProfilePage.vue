@@ -88,29 +88,29 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto p-6 min-h-screen">
-    <div class="mb-8 border-b border-gray-200">
-      <h1 class="text-3xl font-bold mb-4">Личный кабинет</h1>
-      <nav class="flex space-x-4">
+  <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen">
+    <div class="mb-6 sm:mb-8 pb-4 border-b border-gray-200">
+      <h1 class="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Личный кабинет</h1>
+      <nav class="flex overflow-x-auto pb-2 sm:pb-0 space-x-2 sm:space-x-4">
         <button
           @click="activeTab = 'profile'"
-          :class="
+          :class="[
+            'py-1.5 sm:py-2 px-3 sm:px-4 font-medium text-sm sm:text-base',
             activeTab === 'profile'
               ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          "
-          class="py-2 px-4 font-medium"
+              : 'text-gray-500 hover:text-gray-700',
+          ]"
         >
           Профиль
         </button>
         <button
           @click="activeTab = 'orders'"
-          :class="
+          :class="[
+            'py-1.5 sm:py-2 px-3 sm:px-4 font-medium text-sm sm:text-base',
             activeTab === 'orders'
               ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          "
-          class="py-2 px-4 font-medium"
+              : 'text-gray-500 hover:text-gray-700',
+          ]"
         >
           Мои заказы
         </button>
@@ -129,60 +129,62 @@ onMounted(async () => {
     </div>
 
     <div v-else>
-      <div v-show="activeTab === 'profile'" class="space-y-6">
-        <div class="bg-white rounded-xl shadow-sm p-6">
-          <h2 class="text-2xl font-bold mb-4">Личная информация</h2>
-          <div class="space-y-3">
-            <div class="flex items-center">
-              <UserIcon class="w-5 h-5 text-gray-500 mr-2" />
+      <div v-show="activeTab === 'profile'" class="space-y-4 sm:space-y-6">
+        <div class="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-6">
+          <h2 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Личная информация</h2>
+          <div class="space-y-2 sm:space-y-3">
+            <div class="flex items-center text-sm sm:text-base">
+              <UserIcon class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2" />
               <span class="font-medium">{{ authStore.user.displayName }}</span>
             </div>
-            <div class="flex items-center">
-              <MailIcon class="w-5 h-5 text-gray-500 mr-2" />
+            <div class="flex items-center text-sm sm:text-base">
+              <MailIcon class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2" />
               <span>{{ authStore.user.email }}</span>
             </div>
-            <div v-if="profileData?.phone" class="flex items-center">
-              <PhoneIcon class="w-5 h-5 text-gray-500 mr-2" />
+            <div v-if="profileData?.phone" class="flex items-center text-sm sm:text-base">
+              <PhoneIcon class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2" />
               <span>{{ profileData.phone }}</span>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="bg-blue-50 p-4 rounded-lg">
-            <div class="text-blue-600 font-bold text-xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
+          <div class="bg-blue-50 p-3 sm:p-4 rounded-lg">
+            <div class="text-blue-600 font-bold text-lg sm:text-xl">
               {{ orders.filter((o) => o.status === 'completed').length }}
             </div>
-            <div class="text-gray-600">Завершенных заказов</div>
+            <div class="text-gray-600 text-sm sm:text-base">Завершенных заказов</div>
           </div>
-          <div class="bg-yellow-50 p-4 rounded-lg">
-            <div class="text-yellow-600 font-bold text-xl">
+          <div class="bg-yellow-50 p-3 sm:p-4 rounded-lg">
+            <div class="text-yellow-600 font-bold text-lg sm:text-xl">
               {{ orders.filter((o) => o.status === 'processing').length }}
             </div>
-            <div class="text-gray-600">Текущих заказов</div>
+            <div class="text-gray-600 text-sm sm:text-base">Текущих заказов</div>
           </div>
-          <div class="bg-green-50 p-4 rounded-lg">
-            <div class="text-green-600 font-bold text-xl">
+          <div class="bg-green-50 p-3 sm:p-4 rounded-lg">
+            <div class="text-green-600 font-bold text-lg sm:text-xl">
               {{
                 new Intl.NumberFormat('ru-RU').format(orders.reduce((sum, o) => sum + o.total, 0))
               }}
               ₽
             </div>
-            <div class="text-gray-600">Всего потрачено</div>
+            <div class="text-gray-600 text-sm sm:text-base">Всего потрачено</div>
           </div>
         </div>
       </div>
 
-      <div v-show="activeTab === 'orders'" class="space-y-6">
-        <div class="flex flex-wrap gap-2">
+      <div v-show="activeTab === 'orders'" class="space-y-4 sm:space-y-6">
+        <div class="flex flex-wrap gap-1.5 sm:gap-2">
           <button
             v-for="status in ['all', 'processing', 'completed', 'cancelled']"
             :key="status"
             @click="filterStatus = status"
-            :class="
-              filterStatus === status ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
-            "
-            class="px-4 py-2 rounded-full text-sm"
+            :class="[
+              'px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm transition-colors',
+              filterStatus === status
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+            ]"
           >
             {{ statusLabels[status] }}
           </button>
@@ -192,30 +194,39 @@ onMounted(async () => {
           Заказы не найдены
         </div>
 
-        <div v-else class="space-y-4">
+        <div v-else class="space-y-3 sm:space-y-4">
           <div
             v-for="order in filteredOrders"
             :key="order.id"
-            class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
+            class="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow"
           >
-            <div class="flex justify-between items-start mb-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-2 mb-3 sm:mb-4">
               <div>
-                <div class="font-bold text-lg">Заказ #{{ order.id.slice(0, 8).toUpperCase() }}</div>
-                <div class="text-gray-500 text-sm">{{ order.date.toLocaleDateString() }}</div>
+                <div class="font-bold text-base sm:text-lg">
+                  Заказ #{{ order.id.slice(0, 8).toUpperCase() }}
+                </div>
+                <div class="text-gray-500 text-xs sm:text-sm">
+                  {{ order.date.toLocaleDateString() }}
+                </div>
               </div>
-              <span :class="statusClasses[order.status]" class="px-3 py-1 rounded-full text-sm">
+              <span
+                :class="[
+                  statusClasses[order.status],
+                  'px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm',
+                ]"
+              >
                 {{ statusLabels[order.status] }}
               </span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <div class="text-sm font-medium mb-2">Состав заказа:</div>
+                <div class="text-sm font-medium mb-1 sm:mb-2">Состав заказа:</div>
                 <ul class="space-y-1">
                   <li
                     v-for="item in order.items"
                     :key="item.id"
-                    class="flex justify-between text-sm"
+                    class="flex justify-between text-xs sm:text-sm"
                   >
                     <span>{{ item.title }} ×{{ item.quantity }}</span>
                     <span>{{ (item.price * item.quantity).toFixed(2) }} ₽</span>
@@ -224,8 +235,8 @@ onMounted(async () => {
               </div>
 
               <div>
-                <div class="text-sm font-medium mb-2">Детали доставки:</div>
-                <div class="text-sm space-y-1">
+                <div class="text-sm font-medium mb-1 sm:mb-2">Детали доставки:</div>
+                <div class="text-xs sm:text-sm space-y-1">
                   <div>{{ order.deliveryAddress.fullName }}</div>
                   <div>{{ order.deliveryAddress.address }}</div>
                   <div>
@@ -236,13 +247,17 @@ onMounted(async () => {
               </div>
             </div>
 
-            <div class="mt-4 pt-4 border-t flex justify-between items-center">
-              <div class="font-bold">Итого: {{ order.total.toFixed(2) }} ₽</div>
+            <div
+              class="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t flex flex-col sm:flex-row gap-2 justify-between items-start sm:items-center"
+            >
+              <div class="font-bold text-sm sm:text-base">
+                Итого: {{ order.total.toFixed(2) }} ₽
+              </div>
               <button
                 @click="repeatOrder(order.id)"
-                class="text-blue-600 hover:text-blue-800 text-sm flex items-center"
+                class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm flex items-center"
               >
-                <RefreshIcon class="w-4 h-4 mr-1" />
+                <RefreshIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                 Повторить заказ
               </button>
             </div>

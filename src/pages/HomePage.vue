@@ -49,27 +49,32 @@ onMounted(getProducts)
   <img
     src="/main-image.png"
     alt="цветы в вазе"
-    class="w-full max-w-[20rem] md:max-w-[25rem] lg:max-w-[30rem] xl:max-w-[37rem] h-auto absolute -top-[13.5rem] md:-top-[13.5rem] right-[5%] md:right-[5%] transform transition-all duration-300"
+    class="w-full max-w-[1rem] xs:max-w-[12rem] sm:max-w-[18rem] md:max-w-[25rem] lg:max-w-[30rem] xl:max-w-[37rem] h-auto absolute -top-[6rem] xs:-top-[7rem] sm:-top-[10rem] md:-top-[13.5rem] right-[5%] md:right-[5%] transform transition-all duration-300"
   />
   <main class="overflow-hidden relative">
-    <div class="p-12 h-160 relative flex flex-col pt-30 pl-20 gap-8">
-      <h1 class="text-4xl font-bold">
+    <div
+      class="p-4 sm:p-6 md:p-8 lg:p-12 h-80 sm:min-h-[500px] md:h-[600px] relative flex flex-col pt-16 sm:pt-24 md:pt-32 lg:pt-[7.5rem] pl-4 sm:pl-8 md:pl-12 lg:pl-20 gap-4 md:gap-6 lg:gap-8"
+    >
+      <h1 class="text-2xl xs:text-3xl sm:text-4xl font-bold">
         Выбери свой <br />
         <span class="text-gradient">идеальный</span> букет
       </h1>
       <button
-        class="text-white cursor-pointer w-50 p-2 bg-linear-to-tr from-orange-400 to-red-600 hover:from-orange-400 hover:to-red-500 rounded-3xl transition shadow-[0_0px_20px_rgba(255,60,70,1)] hover:shadow-[0_0px_35px_rgba(255,60,70,1)]"
+        class="text-white cursor-pointer w-fit px-6 py-2 md:w-50 md:p-2 bg-linear-to-tr from-orange-400 to-red-600 hover:from-orange-400 hover:to-red-500 rounded-3xl transition shadow-[0_0px_10px_rgba(255,60,70,0.8)] hover:shadow-[0_0px_20px_rgba(255,60,70,0.9)] text-sm md:text-base"
         @click="scrollToFlowers"
       >
         Каталог
       </button>
     </div>
-    <div class="flex pt-8 max-w-11/12 m-auto justify-between items-center" ref="targetDiv">
-      <h1 class="text-5xl font-bold">Каталог</h1>
-      <div class="relative">
+    <div
+      class="flex flex-col sm:flex-row pt-6 md:pt-8 max-w-[95%] xs:max-w-[91%] m-auto justify-between items-start sm:items-center gap-4 sm:gap-0"
+      ref="targetDiv"
+    >
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">Каталог</h1>
+      <div class="relative w-full sm:w-auto">
         <button
           @click="toggleDropdown"
-          class="cursor-pointer transition flex items-center gap-2 px-4 py-2 border-2 rounded-md border-gray-300 bg-white hover:bg-gray-50"
+          class="cursor-pointer transition flex items-center gap-2 px-4 py-2 border-2 rounded-md border-gray-300 bg-white hover:bg-gray-50 w-full sm:w-auto justify-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -97,7 +102,7 @@ onMounted(getProducts)
         >
           <div
             v-if="dropdownOpen"
-            class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4"
+            class="absolute right-0 mt-2 w-full sm:w-64 bg-white rounded-md shadow-lg border border-gray-200 z-50 p-4"
           >
             <div class="mb-4">
               <h3 class="font-medium mb-2">Сортировка</h3>
@@ -130,13 +135,13 @@ onMounted(getProducts)
               <div class="relative">
                 <input
                   v-model="searchQuery"
-                  class="w-full border-2 border-gray-300 rounded-md py-2 pl-10 pr-3"
+                  class="w-full border-2 border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm md:text-base"
                   type="search"
                   placeholder="Найти букет..."
                 />
                 <img
                   src="../assets/search-svgrepo-com.svg"
-                  class="absolute max-w-5 left-2 top-3"
+                  class="absolute max-w-4 md:max-w-5 left-2 top-2.5 md:top-3"
                   alt="Поиск"
                 />
               </div>

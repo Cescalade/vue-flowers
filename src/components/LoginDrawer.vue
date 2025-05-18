@@ -41,7 +41,7 @@ const handleLogin = async (event) => {
   <Transition name="drawer-content">
     <div
       v-if="loginDrawer.isOpen"
-      class="fixed inset-0 m-auto bg-[#f5f6f9] w-88 h-140 rounded-4xl flex flex-col z-11 p-8 pt-10 overflow-hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      class="fixed inset-0 m-auto bg-[#f5f6f9] w-9/10 h-140 rounded-4xl flex flex-col z-11 p-8 pt-10 overflow-hidden [-ms-overflow-style:none] [scrollbar-width:none] sm:w-88"
     >
       <svg
         width="800px"
@@ -68,7 +68,7 @@ const handleLogin = async (event) => {
 
       <div class="mt-12 flex flex-col grow justify-between">
         <form @submit.prevent="handleLogin" class="flex flex-col gap-2">
-          <label for="email" class="ml-2">Почта или номер телефона</label>
+          <label for="email" class="ml-2">Почта</label>
           <input
             type="plain"
             autocomplete="email"

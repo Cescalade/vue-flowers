@@ -24,7 +24,7 @@ const handlePayment = () => {
     }"
   ></div>
   <div
-    class="bg-white w-112 h-full fixed flex flex-col justify-between right-0 top-0 z-11 p-8 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transform transition-transform duration-300 ease-in-out"
+    class="bg-white w-8/9 h-full fixed flex flex-col justify-between right-0 top-0 z-11 p-8 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transform transition-transform duration-300 ease-in-out s:w-112"
     :class="{ 'translate-x-0': drawer.isOpen, 'translate-x-full': !drawer.isOpen }"
   >
     <div>
