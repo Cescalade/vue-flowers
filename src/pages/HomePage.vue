@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import ItemList from '@/components/ItemList.vue'
 import { useOrder } from '../../composable/useOrder'
 import { useProducts } from '../../composable/useProducts'
@@ -9,18 +9,28 @@ const sortBy = ref('name')
 const targetDiv = ref(null)
 const dropdownOpen = ref(false)
 const searchQuery = ref('')
+const isLoaded = ref(false)
+
+const filteredProducts = computed(() => {
+  let result = [...products.value]
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter((product) => product.title.toLowerCase().includes(query))
+  }
+
+  if (sortBy.value === 'name') {
+    result.sort((a, b) => a.title.localeCompare(b.title))
+  } else if (sortBy.value === 'price') {
+    result.sort((a, b) => b.price - a.price)
+  } else if (sortBy.value === '-price') {
+    result.sort((a, b) => a.price - b.price)
+  }
+
+  return result
+})
 
 const scrollToFlowers = () => targetDiv.value.scrollIntoView({ behavior: 'smooth' })
-
-const sortProducts = async (value) => {
-  if (value === 'name') {
-    products.value.sort((a, b) => a.title.localeCompare(b.title))
-  } else if (value === 'price') {
-    products.value.sort((a, b) => b.price - a.price)
-  } else if (value === '-price') {
-    products.value.sort((a, b) => a.price - b.price)
-  }
-}
 
 const toggleDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value
@@ -37,12 +47,13 @@ watch(sortBy, async (newValue) => {
     if (newValue === '-price') {
       products.value.reverse()
     }
-  } else {
-    sortProducts(newValue)
   }
 })
 
-onMounted(getProducts)
+onMounted(async () => {
+  await getProducts()
+  isLoaded.value = true
+})
 </script>
 
 <template>
@@ -150,6 +161,39 @@ onMounted(getProducts)
         </transition>
       </div>
     </div>
-    <ItemList :products="products" />
+
+    <div v-if="!isLoaded" class="text-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+      <p class="mt-4 text-gray-600">Загружаем букеты...</p>
+    </div>
+
+    <template v-else>
+      <div v-if="filteredProducts.length === 0" class="text-center py-12">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-16 w-16 mx-auto text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <h3 class="text-xl font-medium mt-4">Ничего не найдено</h3>
+        <p class="text-gray-600 mt-2">По запросу "{{ searchQuery }}" букеты не найдены</p>
+        <button
+          @click="searchQuery = ''"
+          class="cursor-pointer mt-4 text-gradient opacity-100 hover:opacity-80 font-medium"
+        >
+          Сбросить поиск
+        </button>
+      </div>
+
+      <ItemList v-else :products="filteredProducts" />
+    </template>
   </main>
 </template>

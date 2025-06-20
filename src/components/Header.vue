@@ -9,6 +9,7 @@
           src="@/assets/images/florist-svgrepo-com.svg"
           alt="Logo"
         />
+        <h1 class="ml-3 text-4xl">flove</h1>
       </div>
     </router-link>
 

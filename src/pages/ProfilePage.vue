@@ -1,10 +1,14 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useCartStore } from '@/stores/cartStore'
+import { useDrawerStore } from '@/stores/drawer'
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
+const cartStore = useCartStore()
+const drawerStore = useDrawerStore()
 const router = useRouter()
 const db = getFirestore()
 
@@ -14,6 +18,11 @@ const isLoading = ref(true)
 const activeTab = ref('profile')
 const error = ref(null)
 const filterStatus = ref('all')
+const isRepeating = ref(false)
+
+const currentPage = ref(1)
+const itemsPerPage = ref(5)
+const totalPages = computed(() => Math.ceil(filteredOrders.value.length / itemsPerPage.value))
 
 const statusLabels = {
   all: 'Все заказы',
@@ -31,6 +40,12 @@ const statusClasses = {
 const filteredOrders = computed(() => {
   if (filterStatus.value === 'all') return orders.value
   return orders.value.filter((o) => o.status === filterStatus.value)
+})
+
+const paginatedOrders = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredOrders.value.slice(start, end)
 })
 
 const loadProfileData = async () => {
@@ -85,6 +100,51 @@ onMounted(async () => {
     authLoading.value = false
   }
 })
+
+watch(filterStatus, () => {
+  currentPage.value = 1
+})
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++
+}
+
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--
+}
+
+const goToPage = (page) => {
+  currentPage.value = page
+}
+
+const repeatOrder = async (order) => {
+  try {
+    isRepeating.value = true
+
+    cartStore.clearCart()
+
+    if (order.items && Array.isArray(order.items)) {
+      for (const item of order.items) {
+        cartStore.addItem({
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          imgUrl: item.imgUrl,
+          quantity: item.quantity,
+        })
+      }
+
+      drawerStore.open()
+    } else {
+      throw new Error('Заказ не содержит товаров')
+    }
+  } catch (err) {
+    error.value = 'Не удалось повторить заказ: ' + err.message
+    console.error('Ошибка при повторении заказа:', err)
+  } finally {
+    isRepeating.value = false
+  }
+}
 </script>
 
 <template>
@@ -134,15 +194,54 @@ onMounted(async () => {
           <h2 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Личная информация</h2>
           <div class="space-y-2 sm:space-y-3">
             <div class="flex items-center text-sm sm:text-base">
-              <UserIcon class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
               <span class="font-medium">{{ authStore.user.displayName }}</span>
             </div>
             <div class="flex items-center text-sm sm:text-base">
-              <MailIcon class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
               <span>{{ authStore.user.email }}</span>
             </div>
             <div v-if="profileData?.phone" class="flex items-center text-sm sm:text-base">
-              <PhoneIcon class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                />
+              </svg>
               <span>{{ profileData.phone }}</span>
             </div>
           </div>
@@ -190,13 +289,32 @@ onMounted(async () => {
           </button>
         </div>
 
-        <div v-if="filteredOrders.length === 0" class="text-center py-8 text-gray-500">
+        <div class="flex justify-between items-center mb-4">
+          <div class="text-sm text-gray-600">
+            Показано: {{ paginatedOrders.length }} из {{ filteredOrders.length }}
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-600">Заказов на странице:</span>
+            <select
+              v-model.number="itemsPerPage"
+              class="border rounded-md px-2 py-1 text-sm"
+              @change="currentPage = 1"
+            >
+              <option value="3">3</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+        </div>
+
+        <div v-if="paginatedOrders.length === 0" class="text-center py-8 text-gray-500">
           Заказы не найдены
         </div>
 
         <div v-else class="space-y-3 sm:space-y-4">
           <div
-            v-for="order in filteredOrders"
+            v-for="order in paginatedOrders"
             :key="order.id"
             class="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow"
           >
@@ -254,13 +372,108 @@ onMounted(async () => {
                 Итого: {{ order.total.toFixed(2) }} ₽
               </div>
               <button
-                @click="repeatOrder(order.id)"
-                class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm flex items-center"
+                @click="repeatOrder(order)"
+                :disabled="isRepeating"
+                class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <RefreshIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-                Повторить заказ
+                <svg
+                  v-if="isRepeating"
+                  class="animate-spin w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <svg
+                  v-else
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                {{ isRepeating ? 'Добавляем...' : 'Повторить заказ' }}
               </button>
             </div>
+          </div>
+        </div>
+
+        <!-- Пагинация -->
+        <div
+          v-if="totalPages > 1"
+          class="flex flex-col sm:flex-row items-center justify-between pt-4"
+        >
+          <div class="text-sm text-gray-600 mb-2 sm:mb-0">
+            Страница {{ currentPage }} из {{ totalPages }}
+          </div>
+
+          <div class="flex items-center space-x-1">
+            <button
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              :class="[
+                'px-3 py-1 rounded-md text-sm',
+                currentPage === 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50',
+              ]"
+            >
+              Назад
+            </button>
+
+            <template v-for="page in totalPages" :key="page">
+              <button
+                v-if="Math.abs(page - currentPage) < 3 || page === 1 || page === totalPages"
+                @click="goToPage(page)"
+                :class="[
+                  'w-8 h-8 rounded-full text-sm',
+                  page === currentPage
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50',
+                ]"
+              >
+                {{ page }}
+              </button>
+              <span
+                v-else-if="Math.abs(page - currentPage) === 3 && totalPages > 5"
+                class="px-2 text-gray-400"
+              >
+                ...
+              </span>
+            </template>
+
+            <button
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              :class="[
+                'px-3 py-1 rounded-md text-sm',
+                currentPage === totalPages
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50',
+              ]"
+            >
+              Вперед
+            </button>
           </div>
         </div>
       </div>
