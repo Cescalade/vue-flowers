@@ -185,11 +185,13 @@ onMounted(async () => {
                   d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 ></path>
               </svg>
-              <h3 class="font-medium mt-2">Свежие цветы</h3>
+              <h3 class="font-medium mt-2">Надёжная поставка</h3>
               <p class="text-sm text-gray-600 mt-1">Ежедневно из Нидерландов</p>
             </div>
 
-            <div class="bg-white rounded-xl shadow-md p-4 text-center">
+            <div
+              class="bg-white rounded-xl shadow-md p-4 text-center hover:shadow-lg transition-shadow"
+            >
               <svg
                 class="w-8 h-8 mx-auto text-orange-500"
                 fill="none"
@@ -197,14 +199,24 @@ onMounted(async () => {
                 viewBox="0 0 24 24"
               >
                 <path
+                  opacity="0.1"
+                  d="M4.44905 17.0091C-0.246262 7.83768 7.34063 0.686186 19.5547 3.61251C20.4161 3.81888 21.0082 4.6099 20.9652 5.49458C20.5863 13.288 17.0342 17.7048 6.13264 17.9858C5.43034 18.0039 4.7692 17.6344 4.44905 17.0091Z"
+                />
+                <path
+                  d="M4.44905 17.0091C-0.246262 7.83768 7.34063 0.686186 19.5547 3.61251C20.4161 3.81888 21.0082 4.6099 20.9652 5.49458C20.5863 13.288 17.0342 17.7048 6.13264 17.9858C5.43034 18.0039 4.7692 17.6344 4.44905 17.0091Z"
+                  stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
+                />
+                <path
+                  d="M3.99987 21C5.49993 15.5 5.99988 12.5 11.9998 9.99997"
                   stroke-width="2"
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                ></path>
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
-              <h3 class="font-medium mt-2">Возврат</h3>
-              <p class="text-sm text-gray-600 mt-1">Если не понравится</p>
+              <h3 class="font-medium mt-2">Гарантия</h3>
+              <p class="text-sm text-gray-600 mt-1">Только свежие цветы</p>
             </div>
           </div>
         </div>
